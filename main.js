@@ -15,3 +15,4 @@ document.getElementById('zGate').addEventListener('click', () => blochSphere.app
 document.getElementById('hGate').addEventListener('click', () => blochSphere.applyHadamardGate());
 document.getElementById('reset').addEventListener('click', () => blochSphere.reset());
 
+
