@@ -14,7 +14,13 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0xffffff, 1);
 
 // Function to add the renderer to the DOM
-export function addRendererToDOM(domElementId) {
-    const domElement = document.getElementById(domElementId);
-    domElement.appendChild(renderer.domElement);
+// In sceneSetup.js or a similar file
+export function addRendererToDOM(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.appendChild(renderer.domElement);
+    } else {
+        console.error(`Element with ID '${elementId}' not found.`);
+    }
 }
+

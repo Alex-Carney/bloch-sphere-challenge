@@ -4,10 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bloch Sphere Simulator</title>
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div id="blochSphere"></div>
-<script type="module" src="/main.js"></script>
+<div id="main-container">
+  <div id="controls-container">
+    <button id="xGate">Apply X Gate</button>
+    <button id="yGate">Apply Y Gate</button>
+    <button id="zGate">Apply Z Gate</button>
+    <button id="hGate">Apply Hadamard Gate</button>
+    <button id="reset">Reset</button>
+    <!-- More controls as needed -->
+  </div>
+  <div id="visualization-container">
+    <!-- Three.js visualization will be appended here -->
+  </div>
+</div>
+<script type="module" src="main.js"></script>
 </body>
 </html>

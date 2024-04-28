@@ -1,6 +1,7 @@
 // Renderer.js
 import { scene, camera, renderer, addRendererToDOM } from './sceneSetup';
 import { createControls } from './controls';
+import * as TWEEN from '@tweenjs/tween.js';
 
 export class Renderer {
     constructor() {
@@ -12,12 +13,13 @@ export class Renderer {
     }
 
     init() {
-        addRendererToDOM('blochSphere');
+        addRendererToDOM('visualization-container');
         this.animate();
     }
 
     animate() {
         requestAnimationFrame(() => this.animate());
+        TWEEN.update();
         this.controls.update();
         this.renderer.render(this.scene, this.camera);
     }

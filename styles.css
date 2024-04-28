@@ -1,0 +1,34 @@
+/* styles.css */
+body, html {
+  height: 100%;
+  width: 100%;  /* Ensure the body and html take up full width */
+  margin: 0;
+  padding: 0;  /* Remove any default padding */
+  overflow: hidden;  /* Hide overflow to prevent scrollbars */
+  display: flex;
+  font-family: Arial, sans-serif;
+}
+#main-container {
+  display: flex;
+  flex-direction: row;  /* Explicitly define the flex direction */
+  width: 100%;  /* Ensure container fits exactly into the viewport width */
+  height: 100vh;  /* Use vh for viewport height consistency */
+  overflow: hidden;  /* Additional precaution to avoid unwanted scrollbars */
+}
+#controls-container {
+  flex: 0 0 250px;  /* Use flex shorthand for flex-grow, flex-shrink, and flex-basis */
+  background-color: #f8f8f8;
+  padding: 20px;
+  overflow-y: auto;  /* Only allow vertical scrolling if necessary */
+  overflow-x: hidden;  /* Prevent horizontal overflow */
+}
+#visualization-container {
+  flex-grow: 1;  /* Allow this container to fill the remaining space */
+  background-color: #eee;
+  overflow: hidden;  /* Prevent any type of overflow within the 3D visualization container */
+}
+button {
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+}

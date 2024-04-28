@@ -57,37 +57,43 @@ export function createArrow() {
     return new THREE.ArrowHelper(direction.normalize(), origin, length, color);
 }
 
-
-
-
+// Adjusting axis creation in objects.js or wherever your axes are defined
 export function createAxes() {
     const axes = new THREE.Object3D();
-    const axisLength = 1;  // Longer than the radius to ensure visibility from outside
-    const axisMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });  // Solid black
+    const axisLength = 1;  // Slightly longer than the sphere diameter to be visible
+    const axisMaterial = new THREE.LineBasicMaterial({
+        color: 0x000000,
+        transparent: true,
+        opacity: 0.5  // Reduce opacity to make them less prominent
+    });
 
     // X-axis
-    const xAxisGeometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(-axisLength, 0, 0), new THREE.Vector3(axisLength, 0, 0)
+    const xAxisGeom = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(-axisLength, 0, 0),
+        new THREE.Vector3(axisLength, 0, 0)
     ]);
-    const xAxis = new THREE.Line(xAxisGeometry, axisMaterial);
+    const xAxis = new THREE.Line(xAxisGeom, axisMaterial);
     axes.add(xAxis);
 
     // Y-axis
-    const yAxisGeometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(0, -axisLength, 0), new THREE.Vector3(0, axisLength, 0)
+    const yAxisGeom = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(0, -axisLength, 0),
+        new THREE.Vector3(0, axisLength, 0)
     ]);
-    const yAxis = new THREE.Line(yAxisGeometry, axisMaterial);
+    const yAxis = new THREE.Line(yAxisGeom, axisMaterial);
     axes.add(yAxis);
 
     // Z-axis
-    const zAxisGeometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(0, 0, -axisLength), new THREE.Vector3(0, 0, axisLength)
+    const zAxisGeom = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(0, 0, -axisLength),
+        new THREE.Vector3(0, 0, axisLength)
     ]);
-    const zAxis = new THREE.Line(zAxisGeometry, axisMaterial);
+    const zAxis = new THREE.Line(zAxisGeom, axisMaterial);
     axes.add(zAxis);
 
     return axes;
 }
+
 
 export function addTextLabels(scene) {
     const label0 = createTextSprite("|0>", 60, "rgba(0, 0, 0, 1)", new THREE.Vector3(0, 1.3, 0)); // Above north pole
