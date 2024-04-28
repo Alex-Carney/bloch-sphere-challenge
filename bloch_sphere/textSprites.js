@@ -11,20 +11,20 @@ import * as THREE from 'three';
  */
 export function createTextSprite(message, fontsize, color, position) {
     // Create canvas for the text
-    var canvas = document.createElement('canvas');
-    var context = canvas.getContext('2d');
+    let canvas = document.createElement('canvas');
+    let context = canvas.getContext('2d');
     context.font = `${fontsize}px Arial`;
     context.fillStyle = color;
     context.textAlign = 'center';
     context.fillText(message, canvas.width / 2, canvas.height / 2);
 
     // Update canvas texture
-    var texture = new THREE.Texture(canvas);
+    let texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;
 
     // Create sprite material using the texture
-    var spriteMaterial = new THREE.SpriteMaterial({ map: texture });
-    var sprite = new THREE.Sprite(spriteMaterial);
+    let spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+    let sprite = new THREE.Sprite(spriteMaterial);
     sprite.position.copy(position);
     sprite.scale.set(0.5, 0.25, 1.0);  // Adjust scale to make text bigger if necessary
     sprite.center.set(0.5, 0.5);  // Ensure text is centered

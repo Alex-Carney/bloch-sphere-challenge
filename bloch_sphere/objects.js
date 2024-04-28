@@ -98,6 +98,11 @@ export function createAxes() {
 export function addTextLabels(scene) {
     const label0 = createTextSprite("|0>", 60, "rgba(0, 0, 0, 1)", new THREE.Vector3(0, 1.3, 0)); // Above north pole
     const label1 = createTextSprite("|1>", 60, "rgba(0, 0, 0, 1)", new THREE.Vector3(0, -1.3, 0)); // Below south pole
+    const labelX = createTextSprite("x", 60, "rgba(0, 0, 0, 1)", new THREE.Vector3(1.2, .1, 0));  // X-axis label
+    const labelY = createTextSprite("y", 60, "rgba(0, 0, 0, 1)", new THREE.Vector3(0, .1, 1.2));  // Y-axis label
+
+    scene.add(labelX);
+    scene.add(labelY);
     scene.add(label0);
     scene.add(label1);
 }
