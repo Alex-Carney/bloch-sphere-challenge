@@ -2,7 +2,6 @@
 import * as THREE from 'three';
 import { createArrow, createSphere, createAxes, createEquator, addTextLabels } from './objects';
 import * as TWEEN from '@tweenjs/tween.js'
-import * as math from 'mathjs';
 
 export class BlochSphere {
     constructor(scene) {
@@ -24,9 +23,12 @@ export class BlochSphere {
         const quaternionInitial = this.arrow.quaternion.clone();
         const quaternionChange = new THREE.Quaternion();
         quaternionChange.setFromAxisAngle(axis.normalize(), angle);
+        console.log("QUATERNION CHANGE", quaternionChange)
 
         // Compute the final orientation by applying the change to the initial orientation
-        const quaternionFinal = quaternionInitial.clone().multiply(quaternionChange);
+        // MUST BE PREMULTIPLY! WOW!
+        const quaternionFinal = quaternionInitial.clone().premultiply(quaternionChange);
+        // console.log("QUATERNION FINAL", quaternionFinal)
 
         // Disable all buttons with thet "gate-button" classs
         const buttons = document.getElementsByClassName("gate-button");
@@ -43,6 +45,7 @@ export class BlochSphere {
             })
             .onComplete(() => {
                 // Ensure the arrow's quaternion is exactly the final quaternion to avoid any precision errors
+                console.log("ON COMPLETE", quaternionFinal)
                 this.arrow.quaternion.copy(quaternionFinal);
                 if (onComplete) onComplete();
                 // Enable all buttons with the "gate-button" class
@@ -96,7 +99,7 @@ export class BlochSphere {
 
     applyYGate() {
         const axis = new THREE.Vector3(0, 0, 1); // Y-axis
-        const angle = Math.PI; // 180 degrees
+        const angle = -Math.PI; // 180 degrees
         this.animateRotation(axis, angle);
     }
 
@@ -107,11 +110,9 @@ export class BlochSphere {
     }
 
     applyHadamardGate() {
-        const axisY = new THREE.Vector3(0, 1, 0); // Y-axis
-        const axisX = new THREE.Vector3(0, 0, 1); // X-axis
-        const angleY = Math.PI / 2; // 90 degrees
-        const angleX = Math.PI / 2; // Additional 90 degrees
-        this.animateRotation(axisX, angleX);
+        const axis = new THREE.Vector3(1, 1, 0).normalize(); // (1, 0, 1) is the vector sum of X and Z axes
+        const angle = Math.PI; // 180 degrees
+        this.animateRotation(axis, angle);
     }
 
 

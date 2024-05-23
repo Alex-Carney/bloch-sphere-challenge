@@ -3,7 +3,7 @@ import { Renderer } from './renderer/Renderer';
 import { BlochSphere } from './bloch_sphere/BlochSphere';
 
 // Initialize the renderer which sets up the scene, camera, controls, and starts the animation loop
-const renderer = new Renderer();
+const renderer = new Renderer(window);
 
 // Initialize the Bloch Sphere within the provided scene from Renderer
 const blochSphere = new BlochSphere(renderer.scene);
@@ -15,4 +15,5 @@ document.getElementById('zGate').addEventListener('click', () => blochSphere.app
 document.getElementById('hGate').addEventListener('click', () => blochSphere.applyHadamardGate());
 document.getElementById('reset').addEventListener('click', () => blochSphere.reset());
 
+renderer.onWindowResize(); // Ensure the renderer size is set correctly
 

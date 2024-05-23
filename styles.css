@@ -15,18 +15,21 @@ body, html {
   height: 100vh;  /* Use vh for viewport height consistency */
   overflow: hidden;  /* Additional precaution to avoid unwanted scrollbars */
 }
+
 #controls-container {
-  flex: 0 0 250px;  /* Use flex shorthand for flex-grow, flex-shrink, and flex-basis */
+  flex: 0 0 33%;  /* Flex-basis as 20% of the parent container */
   background-color: #f8f8f8;
   padding: 20px;
   overflow-y: auto;  /* Only allow vertical scrolling if necessary */
   overflow-x: hidden;  /* Prevent horizontal overflow */
 }
+
 #visualization-container {
   flex-grow: 1;  /* Allow this container to fill the remaining space */
   background-color: #eee;
   overflow: hidden;  /* Prevent any type of overflow within the 3D visualization container */
 }
+
 button {
   padding: 10px;
   margin-bottom: 10px;

@@ -5,7 +5,7 @@ export const scene = new THREE.Scene();
 // Camera setup
 // In sceneSetup.js or your main camera setup
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(.1, .1, 3); // Adjust so we can see the north and south poles clearly
+camera.position.set(.2, .33, 2); // Adjust so we can see the north and south poles clearly
 camera.lookAt(new THREE.Vector3(0, 0, 0)); // Look at the center of the scene
 
 
