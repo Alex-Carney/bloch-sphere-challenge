@@ -10,6 +10,52 @@ export class BlochSphere {
         this.scene.add(this.arrow);
         this.initializeComponents();
         this.initializeTraceLine();
+        this.dephasingActive = false;
+        this.dephasingTween = null;
+    }
+
+    startDephasing() {
+        console.log("Dephasing started")
+        const axis = new THREE.Vector3(0, 1, 0); // Z-axis for dephasing
+        const halfCircle = Math.PI; // 360 degrees
+        const duration = 20000; // Duration for a full 360 rotation, can adjust for slower/faster dephasing
+
+        const quaternionInitial = this.arrow.quaternion.clone();
+        const quaternionChange = new THREE.Quaternion().setFromAxisAngle(axis, halfCircle);
+        const quaternionFinal = quaternionInitial.clone().premultiply(quaternionChange);
+
+        this.dephasingTween = new TWEEN.Tween({ t: 0 })
+            .to({ t: 1 }, duration)
+            .onUpdate((obj) => {
+                // this.arrow.quaternion.slerp(quaternionFinal, obj.t);
+                this.arrow.quaternion.copy(quaternionInitial).slerp(quaternionFinal, obj.t);
+                this.updateTraceLine();
+            })
+            .onComplete(() => {
+                this.arrow.quaternion.copy(quaternionFinal);
+                this.startDephasing();
+            })
+            .onStop(() => {
+                // this.arrow.quaternion.copy(quaternionFinal);
+            })
+            .start();
+
+        this.dephasingActive = true;
+
+    }
+
+    stopDephasing() {
+        console.log("Dephasing stopped")
+        this.dephasingTween?.stop();
+        this.dephasingActive = false;
+    }
+
+    toggleDephasing() {
+        if (this.dephasingActive) {
+            this.stopDephasing();
+        } else {
+            this.startDephasing();
+        }
     }
 
     initializeComponents() {
@@ -20,37 +66,36 @@ export class BlochSphere {
     }
 
     animateRotation(axis, angle, onComplete) {
-        const quaternionInitial = this.arrow.quaternion.clone();
-        const quaternionChange = new THREE.Quaternion();
-        quaternionChange.setFromAxisAngle(axis.normalize(), angle);
-        console.log("QUATERNION CHANGE", quaternionChange)
-
-        // Compute the final orientation by applying the change to the initial orientation
-        // MUST BE PREMULTIPLY! WOW!
-        const quaternionFinal = quaternionInitial.clone().premultiply(quaternionChange);
-        // console.log("QUATERNION FINAL", quaternionFinal)
-
-        // Disable all buttons with thet "gate-button" classs
-        const buttons = document.getElementsByClassName("gate-button");
-        for (let i = 0; i < buttons.length; i++) {
-            buttons[i].disabled = true;
+        const wasDephasing = this.dephasingActive;
+        if (wasDephasing) {
+            this.stopDephasing();
         }
 
-        const tween = new TWEEN.Tween({ t: 0 })
-            .to({ t: 1 }, 1000)
+        const quaternionInitial = this.arrow.quaternion.clone();
+        const quaternionChange = new THREE.Quaternion().setFromAxisAngle(axis.normalize(), angle);
+
+        const quaternionFinal = quaternionInitial.clone().premultiply(quaternionChange);
+
+        const buttons = document.getElementsByClassName("gate-button");
+        for (let button of buttons) {
+            button.disabled = true;
+        }
+
+        new TWEEN.Tween({ t: 0 })
+            .to({ t: 1 }, 600)
             .onUpdate((obj) => {
-                // Slerp the quaternion directly on the arrow
-                this.arrow.quaternion.slerp(quaternionFinal, obj.t);
-                this.updateTraceLine();  // Optionally update the trace line
+                // this.arrow.quaternion.slerp(quaternionFinal, obj.t);
+                this.arrow.quaternion.copy(quaternionInitial).slerp(quaternionFinal, obj.t);
+                this.updateTraceLine();
             })
             .onComplete(() => {
-                // Ensure the arrow's quaternion is exactly the final quaternion to avoid any precision errors
-                console.log("ON COMPLETE", quaternionFinal)
                 this.arrow.quaternion.copy(quaternionFinal);
-                if (onComplete) onComplete();
-                // Enable all buttons with the "gate-button" class
-                for (let i = 0; i < buttons.length; i++) {
-                    buttons[i].disabled = false;
+                onComplete?.();
+                for (let button of buttons) {
+                    button.disabled = false;
+                }
+                if (wasDephasing) {
+                    this.startDephasing();
                 }
             })
             .start();
@@ -82,6 +127,8 @@ export class BlochSphere {
     // In BlochSphere.js
     reset() {
         // Reset the arrow's orientation
+        this.stopDephasing();
+        this.dephasingActive = false;
         this.arrow.rotation.set(0, 0, 0);
 
         // Clear the positions and reset the trace line geometry
@@ -112,6 +159,30 @@ export class BlochSphere {
     applyHadamardGate() {
         const axis = new THREE.Vector3(1, 1, 0).normalize(); // (1, 0, 1) is the vector sum of X and Z axes
         const angle = Math.PI; // 180 degrees
+        this.animateRotation(axis, angle);
+    }
+
+    applySGate() {
+        const axis = new THREE.Vector3(0, 1, 0); // Z-axis
+        const angle = Math.PI / 2; // 90 degrees
+        this.animateRotation(axis, angle);
+    }
+
+    applyTGate() {
+        const axis = new THREE.Vector3(0, 1, 0); // Z-axis
+        const angle = Math.PI / 4; // 45 degrees
+        this.animateRotation(axis, angle);
+    }
+
+    applySGateInverse() {
+        const axis = new THREE.Vector3(0, 1, 0); // Z-axis
+        const angle = -Math.PI / 2; // -90 degrees
+        this.animateRotation(axis, angle);
+    }
+
+    applyTGateInverse() {
+        const axis = new THREE.Vector3(0, 1, 0); // Z-axis
+        const angle = -Math.PI / 4; // -45 degrees
         this.animateRotation(axis, angle);
     }
 

@@ -9,13 +9,33 @@
 <body>
 <div id="main-container">
   <div id="controls-container">
-    <button id="xGate" class="gate-button">Apply X Gate</button>
-    <button id="yGate" class="gate-button">Apply Y Gate</button>
-    <button id="zGate" class="gate-button">Apply Z Gate</button>
-    <button id="hGate" class="gate-button">Apply Hadamard Gate</button>
-    <button id="reset" class="gate-button">Reset</button>
-    <!-- More controls as needed -->
+    <!-- Pauli Gates -->
+    <div class="row" id="pauli-gates">
+      <button id="xGate" class="gate-button">Apply X Gate</button>
+      <button id="yGate" class="gate-button">Apply Y Gate</button>
+      <button id="zGate" class="gate-button">Apply Z Gate</button>
+    </div>
+
+    <!-- Hadamard Gate -->
+    <div class="row" id="hadamard-gate">
+      <button id="hGate" class="gate-button">Apply Hadamard Gate</button>
+    </div>
+
+    <!-- Phase Gates -->
+    <div class="row" id="phase-gates">
+      <button id="sGate" class="gate-button">Apply S Gate</button>
+      <button id="sDaggerGate" class="gate-button">Apply S† Gate</button>
+      <button id="tGate" class="gate-button">Apply T Gate</button>
+      <button id="tDaggerGate" class="gate-button">Apply T† Gate</button>
+    </div>
+
+    <!-- System Controls -->
+    <div class="row" id="system-controls">
+      <button id="reset" class="gate-button">Reset</button>
+      <button id="dephasing" class="gate-button">Toggle Dephasing</button>
+    </div>
   </div>
+
   <div id="visualization-container">
     <!-- Three.js visualization will be appended here -->
   </div>

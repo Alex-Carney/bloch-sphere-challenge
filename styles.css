@@ -10,25 +10,40 @@ body, html {
 }
 #main-container {
   display: flex;
-  flex-direction: row;  /* Explicitly define the flex direction */
-  width: 100%;  /* Ensure container fits exactly into the viewport width */
-  height: 100vh;  /* Use vh for viewport height consistency */
-  overflow: hidden;  /* Additional precaution to avoid unwanted scrollbars */
+  flex-direction: row;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
 #controls-container {
-  flex: 0 0 33%;  /* Flex-basis as 20% of the parent container */
+  flex: 0 0 33%;
   background-color: #f8f8f8;
   padding: 20px;
-  overflow-y: auto;  /* Only allow vertical scrolling if necessary */
-  overflow-x: hidden;  /* Prevent horizontal overflow */
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 #visualization-container {
-  flex-grow: 1;  /* Allow this container to fill the remaining space */
+  flex-grow: 1;
   background-color: #eee;
-  overflow: hidden;  /* Prevent any type of overflow within the 3D visualization container */
+  overflow: hidden;
 }
+
+.row {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-around; /* This will space out the buttons evenly */
+}
+
+.gate-button {
+  flex-grow: 1; /* Makes buttons expand to fill their container */
+  margin: 0 10px; /* Adds some space between buttons */
+  padding: 10px 20px; /* Better touch area and aesthetics */
+}
+
 
 button {
   padding: 10px;
