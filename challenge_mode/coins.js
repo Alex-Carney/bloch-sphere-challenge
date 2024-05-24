@@ -10,7 +10,7 @@ function createCoin() {
     return new THREE.Mesh(geometry, material);
 }
 
-export function addCoinToState(state) {
+export function addCoinToState(state, scene) {
     const coin = createCoin();
     let position;
     switch (state) {
@@ -28,7 +28,7 @@ export function addCoinToState(state) {
             return;
     }
     coin.position.copy(position);  // Set the coin's position on the sphere
-    this.scene.add(coin);
+    scene.add(coin);
     return coin;
 }
 

@@ -20,9 +20,9 @@ document.getElementById('sGate').addEventListener('click', () => blochSphere.app
 document.getElementById('tGate').addEventListener('click', () => blochSphere.applyTGate());
 document.getElementById('sDaggerGate').addEventListener('click', () => blochSphere.applySGateInverse());
 document.getElementById('tDaggerGate').addEventListener('click', () => blochSphere.applyTGateInverse());
-// document.getElementById('challenge1').addEventListener('click', () => blochSphere.startChallengeMode(CHALLENGE_MODE_LEVELS.EASY));
-// document.getElementById('challenge2').addEventListener('click', () => blochSphere.startChallengeMode(CHALLENGE_MODE_LEVELS.MEDIUM));
-// document.getElementById('challenge3').addEventListener('click', () => blochSphere.startChallengeMode(CHALLENGE_MODE_LEVELS.HARD));
+document.getElementById('challenge1').addEventListener('click', () => blochSphere.startChallengeMode(CHALLENGE_MODE_LEVELS.EASY));
+document.getElementById('challenge2').addEventListener('click', () => blochSphere.startChallengeMode(CHALLENGE_MODE_LEVELS.MEDIUM));
+document.getElementById('challenge3').addEventListener('click', () => blochSphere.startChallengeMode(CHALLENGE_MODE_LEVELS.HARD));
 
 
 

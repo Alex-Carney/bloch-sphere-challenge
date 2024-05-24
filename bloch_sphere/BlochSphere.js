@@ -105,7 +105,9 @@ export class BlochSphere {
                 if (wasDephasing) {
                     this.startDephasing();
                 }
+                console.log(this.challengeModeActivated)
                 if (this.challengeModeActivated) {
+                    console.log('WOOOOO')
                     this.checkCoinPositions();
                 }
 
@@ -199,6 +201,7 @@ export class BlochSphere {
 
     startChallengeMode(level) {
         this.challengeModeActivated = true;
+        console.log('I STATED CHALLENGE MODE')
         this.initializeByLevel(level);
     }
 
@@ -240,12 +243,19 @@ export class BlochSphere {
     }
 
     checkCoinPositions() {
+        const arrowTip = new THREE.Vector3(0, 1, 0); // Assuming the arrow length is 1 and points up
         this.coins.forEach((coin) => {
-            const distance = this.arrow.position.distanceTo(coin.position);
+            arrowTip.applyQuaternion(this.arrow.quaternion);
+            const distance = arrowTip.distanceTo(coin.position);
             if (distance < 0.1) {
-                console.log("Coin collected");
                 this.scene.remove(coin);
+                this.coins = this.coins.filter((c) => c !== coin);
+                if(this.coins.length === 0) {
+                    this.challengeModeActivated = false;
+                    alert("Congratulations! You have completed the challenge. LETS FREAKING GOOOO LFG LFG LFG")
+                }
             }
+            arrowTip.set(0, 1, 0); // Reset the arrowTip for the next iteration
         });
     }
 
