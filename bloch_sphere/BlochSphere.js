@@ -226,6 +226,7 @@ export class BlochSphere {
         states.forEach((state) => {
             this.coins.push(addCoinToState(state, this.scene));
         });
+        this.hardMode = false;
     }
 
     initializeMediumCoins() {
@@ -233,6 +234,7 @@ export class BlochSphere {
         states.forEach((state) => {
             this.coins.push(addCoinToState(state, this.scene));
         });
+        this.hardMode = false;
     }
 
     initializeHardCoins() {
