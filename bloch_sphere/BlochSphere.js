@@ -2,6 +2,8 @@
 import * as THREE from 'three';
 import { createArrow, createSphere, createAxes, createEquator, addTextLabels } from './objects';
 import * as TWEEN from '@tweenjs/tween.js'
+import {addCoinToState} from "../challenge_mode/coins.js";
+import {CHALLENGE_MODE_LEVELS} from "../challenge_mode/challenge_mode.js";
 
 export class BlochSphere {
     constructor(scene) {
@@ -12,6 +14,10 @@ export class BlochSphere {
         this.initializeTraceLine();
         this.dephasingActive = false;
         this.dephasingTween = null;
+
+        // CHALLENGE MODE STUFF
+        this.challengeModeActivated = false;
+        this.coins = [];
     }
 
     startDephasing() {
@@ -30,10 +36,12 @@ export class BlochSphere {
                 // this.arrow.quaternion.slerp(quaternionFinal, obj.t);
                 this.arrow.quaternion.copy(quaternionInitial).slerp(quaternionFinal, obj.t);
                 this.updateTraceLine();
+                this.checkCoinPositions();
             })
             .onComplete(() => {
                 this.arrow.quaternion.copy(quaternionFinal);
                 this.startDephasing();
+                this.checkCoinPositions();
             })
             .onStop(() => {
                 // this.arrow.quaternion.copy(quaternionFinal);
@@ -97,12 +105,13 @@ export class BlochSphere {
                 if (wasDephasing) {
                     this.startDephasing();
                 }
+                if (this.challengeModeActivated) {
+                    this.checkCoinPositions();
+                }
+
             })
             .start();
     }
-
-
-
 
 
     initializeTraceLine() {
@@ -185,6 +194,61 @@ export class BlochSphere {
         const angle = -Math.PI / 4; // -45 degrees
         this.animateRotation(axis, angle);
     }
+
+    // CHALLENGE MODE STUFF
+
+    startChallengeMode(level) {
+        this.challengeModeActivated = true;
+        this.initializeByLevel(level);
+    }
+
+    initializeByLevel(level) {
+        switch (level) {
+            case CHALLENGE_MODE_LEVELS.EASY:
+                this.initializeEasyCoins();
+                break;
+            case CHALLENGE_MODE_LEVELS.MEDIUM:
+                this.initializeMediumCoins();
+                break;
+            case CHALLENGE_MODE_LEVELS.HARD:
+                this.initializeHardCoins();
+                break;
+            default:
+                console.log("Level not recognized");
+        }
+    }
+
+    initializeEasyCoins() {
+        const states = ["|1>", "|+>", "|->"];
+        states.forEach((state) => {
+            this.coins.push(addCoinToState(state, this.scene));
+        });
+    }
+
+    initializeMediumCoins() {
+        const states = ["|1>", "|0>", "|+>", "|->"];
+        states.forEach((state) => {
+            this.coins.push(addCoinToState(state, this.scene));
+        });
+    }
+
+    initializeHardCoins() {
+        const states = ["|0>", "|1>", "|+>", "|->", "|i>", "|-i>"];
+        states.forEach((state) => {
+            this.coins.push(addCoinToState(state, this.scene));
+        });
+    }
+
+    checkCoinPositions() {
+        this.coins.forEach((coin) => {
+            const distance = this.arrow.position.distanceTo(coin.position);
+            if (distance < 0.1) {
+                console.log("Coin collected");
+                this.scene.remove(coin);
+            }
+        });
+    }
+
 
 
 }

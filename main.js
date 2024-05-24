@@ -1,6 +1,7 @@
 // main.js
 import { Renderer } from './renderer/Renderer';
 import { BlochSphere } from './bloch_sphere/BlochSphere';
+import {CHALLENGE_MODE_LEVELS} from "./challenge_mode/challenge_mode.js";
 
 // Initialize the renderer which sets up the scene, camera, controls, and starts the animation loop
 const renderer = new Renderer(window);
@@ -19,6 +20,10 @@ document.getElementById('sGate').addEventListener('click', () => blochSphere.app
 document.getElementById('tGate').addEventListener('click', () => blochSphere.applyTGate());
 document.getElementById('sDaggerGate').addEventListener('click', () => blochSphere.applySGateInverse());
 document.getElementById('tDaggerGate').addEventListener('click', () => blochSphere.applyTGateInverse());
+// document.getElementById('challenge1').addEventListener('click', () => blochSphere.startChallengeMode(CHALLENGE_MODE_LEVELS.EASY));
+// document.getElementById('challenge2').addEventListener('click', () => blochSphere.startChallengeMode(CHALLENGE_MODE_LEVELS.MEDIUM));
+// document.getElementById('challenge3').addEventListener('click', () => blochSphere.startChallengeMode(CHALLENGE_MODE_LEVELS.HARD));
+
 
 
 renderer.onWindowResize(); // Ensure the renderer size is set correctly

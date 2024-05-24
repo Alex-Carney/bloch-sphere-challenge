@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+
+
 function createCoin() {
     const geometry = new THREE.SphereGeometry(0.05, 16, 16); // Smaller radius for the coin
     const material = new THREE.MeshBasicMaterial({
