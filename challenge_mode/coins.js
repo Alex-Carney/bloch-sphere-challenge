@@ -15,6 +15,9 @@ export function addCoinToState(state, scene) {
     let position;
     switch (state) {
         case "|1>":
+            position = new THREE.Vector3(0, -1, 0);
+            break;
+        case "|i>":
             position = new THREE.Vector3(0, 0, 1);
             break;
         case "|+>":
@@ -22,6 +25,23 @@ export function addCoinToState(state, scene) {
             break;
         case "|->":
             position = new THREE.Vector3(-1, 0, 0);
+            break;
+        case "hanover":
+            position = new THREE.Vector3(0, 1, 1).normalize();
+            break;
+        case "gpt":
+            position = new THREE.Vector3(1, -1, 0).normalize();
+            break;
+        case "tzone":
+            position = new THREE.Vector3(-1, 0, 1).normalize();
+            break;
+        case "tzone2":
+            position = new THREE.Vector3(1, 0, -1).normalize();
+            break;
+        case "idk":
+            // random position on teh sphere
+            // random position on the sphere
+            position = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
             break;
         default:
             console.log("State not recognized");

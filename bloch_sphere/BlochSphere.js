@@ -18,10 +18,10 @@ export class BlochSphere {
         // CHALLENGE MODE STUFF
         this.challengeModeActivated = false;
         this.coins = [];
+        this.hardMode = false;
     }
 
     startDephasing() {
-        console.log("Dephasing started")
         const axis = new THREE.Vector3(0, 1, 0); // Z-axis for dephasing
         const halfCircle = Math.PI; // 360 degrees
         const duration = 20000; // Duration for a full 360 rotation, can adjust for slower/faster dephasing
@@ -53,7 +53,6 @@ export class BlochSphere {
     }
 
     stopDephasing() {
-        console.log("Dephasing stopped")
         this.dephasingTween?.stop();
         this.dephasingActive = false;
     }
@@ -105,9 +104,7 @@ export class BlochSphere {
                 if (wasDephasing) {
                     this.startDephasing();
                 }
-                console.log(this.challengeModeActivated)
                 if (this.challengeModeActivated) {
-                    console.log('WOOOOO')
                     this.checkCoinPositions();
                 }
 
@@ -146,6 +143,9 @@ export class BlochSphere {
         this.positions = [0, 1, 0];  // Assuming the arrow starts pointing up
         this.traceGeometry.setAttribute('position', new THREE.Float32BufferAttribute(this.positions, 3));
         this.traceGeometry.attributes.position.needsUpdate = true;
+
+        // Clean challenge mode
+        this.cleanAllCoins();
     }
 
     applyXGate() {
@@ -201,11 +201,11 @@ export class BlochSphere {
 
     startChallengeMode(level) {
         this.challengeModeActivated = true;
-        console.log('I STATED CHALLENGE MODE')
         this.initializeByLevel(level);
     }
 
     initializeByLevel(level) {
+        this.cleanAllCoins();
         switch (level) {
             case CHALLENGE_MODE_LEVELS.EASY:
                 this.initializeEasyCoins();
@@ -222,24 +222,25 @@ export class BlochSphere {
     }
 
     initializeEasyCoins() {
-        const states = ["|1>", "|+>", "|->"];
+        const states = ["|1>", "|i>", "|+>", "|->"];
         states.forEach((state) => {
             this.coins.push(addCoinToState(state, this.scene));
         });
     }
 
     initializeMediumCoins() {
-        const states = ["|1>", "|0>", "|+>", "|->"];
+        const states = ["hanover", "gpt", "tzone", "tzone2"];
         states.forEach((state) => {
             this.coins.push(addCoinToState(state, this.scene));
         });
     }
 
     initializeHardCoins() {
-        const states = ["|0>", "|1>", "|+>", "|->", "|i>", "|-i>"];
+        const states = ["idk", "idk", "idk"];
         states.forEach((state) => {
             this.coins.push(addCoinToState(state, this.scene));
         });
+        this.hardMode = true;
     }
 
     checkCoinPositions() {
@@ -252,11 +253,23 @@ export class BlochSphere {
                 this.coins = this.coins.filter((c) => c !== coin);
                 if(this.coins.length === 0) {
                     this.challengeModeActivated = false;
-                    alert("Congratulations! You have completed the challenge. LETS FREAKING GOOOO LFG LFG LFG")
+                    if(this.hardMode) {
+                        alert("YOU WON ON HARD MODE! YOU ARE A GENIUS! WOOOO!!! SHOW ALEX HOW LFG YOU ARE!");
+                    } else {
+                        alert("Congratulations! You have completed the challenge. LETS FREAKING GOOOO LFG LFG LFG")
+                    }
+
                 }
             }
             arrowTip.set(0, 1, 0); // Reset the arrowTip for the next iteration
         });
+    }
+
+    cleanAllCoins() {
+        this.coins.forEach((coin) => {
+            this.scene.remove(coin);
+        });
+        this.coins = [];
     }
 
 
