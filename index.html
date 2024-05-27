@@ -81,13 +81,20 @@
       <button id="t1" class="gate-button">Simulate T1 Process</button>
       <button id="t2" class="gate-button">Simulate T2 Process</button>
       <button id="t1t2" class="gate-button">Simulate BOTH Processes</button>
+      <div class="slider-container">
+        <label for="t1val">T1 Time 1 to 8s</label>
+        <input type="range" id="t1val" name="t1val" min="1" max="8" value="4" class="slider">
+        <label for="t2val">T2 Time 1 to 8s</label>
+        <input type="range" id="t2val" name="t2val" min="1" max="8" value="4" class="slider">
+      </div>
     </div>
 
     <div class="row-header" id="pauli-gates-23">
       <h3>Reset (Or Refresh)</h3>
     </div>
     <div class="row" id="system-controls">
-      <button id="reset" class="gate-button">Reset</button>
+      <button id="reset" class="gate-button">Hard Reset</button>
+      <button id="duplicate" class="gate-button">Duplicate Sphere</button>
     </div>
 
   </div>

@@ -84,6 +84,14 @@ export class BlochSphere {
         }
     }
 
+    duplicateComponents() {
+        const duplicateGroup = new THREE.Group();
+        const newSphereGeometry = createBasicSphereGeometry();
+        const newSphere = createSphere(newSphereGeometry);
+        duplicateGroup.add(newSphere);
+        this.scene.add(duplicateGroup);
+    }
+
     initializeComponents(customGeometry = null, z_origin=0) {
         this.blochSphereGroup = new THREE.Group();
         let initialSphereGeometry;
@@ -302,7 +310,7 @@ export class BlochSphere {
     }
     // In BlochSphere.js
     reset() {
-        // Reset the arrow's orientation
+        // // Reset the arrow's orientation
         this.stopDephasing();
         this.dephasingActive = false;
         this.arrow.rotation.set(0, 0, 0);
@@ -315,6 +323,11 @@ export class BlochSphere {
 
         // Clean challenge mode
         this.cleanAllCoins();
+
+    }
+
+    duplicate() {
+        this.duplicateComponents();
     }
 
     applyXGate() {
