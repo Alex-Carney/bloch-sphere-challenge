@@ -11,6 +11,7 @@ export function createSphere() {
         depthWrite: false
     });
     const mesh = new THREE.Mesh(geometry, material);
+    mesh.name = 'blochSphere';
 
     const edgesGeometry = new THREE.EdgesGeometry(geometry);
     const wireframeMaterial = new THREE.LineBasicMaterial({
@@ -101,10 +102,7 @@ export function addTextLabels(scene) {
     const labelX = createTextSprite("x", 60, "rgba(0, 0, 0, 1)", new THREE.Vector3(1.2, .1, 0));  // X-axis label
     const labelY = createTextSprite("y", 60, "rgba(0, 0, 0, 1)", new THREE.Vector3(0, .1, 1.2));  // Y-axis label
 
-    scene.add(labelX);
-    scene.add(labelY);
-    scene.add(label0);
-    scene.add(label1);
+    return [label0, label1, labelX, labelY];
 }
 
 

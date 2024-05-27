@@ -10,18 +10,20 @@
 <div id="main-container">
   <div id="controls-container">
     <!-- Pauli Gates -->
+    <div class="row-header" id="pauli-gates-2">
+      <h3>Simple Gates</h3>
+    </div>
     <div class="row" id="pauli-gates">
       <button id="xGate" class="gate-button">Apply X Gate</button>
       <button id="yGate" class="gate-button">Apply Y Gate</button>
       <button id="zGate" class="gate-button">Apply Z Gate</button>
-    </div>
-
-    <!-- Hadamard Gate -->
-    <div class="row" id="hadamard-gate">
       <button id="hGate" class="gate-button">Apply Hadamard Gate</button>
     </div>
 
     <!-- Phase Gates -->
+    <div class="row-header" id="pauli-gates-3">
+      <h3>Phase Gates</h3>
+    </div>
     <div class="row" id="phase-gates">
       <button id="sGate" class="gate-button">Apply S Gate</button>
       <button id="sDaggerGate" class="gate-button">Apply S† Gate</button>
@@ -29,16 +31,51 @@
       <button id="tDaggerGate" class="gate-button">Apply T† Gate</button>
     </div>
 
-    <!-- System Controls -->
-    <div class="row" id="system-controls">
-      <button id="reset" class="gate-button">Reset</button>
-      <button id="dephasing" class="gate-button">Toggle Dephasing</button>
+
+
+    <div class="row-header" id="pauli-gates-52">
+      <h3>Frame Change</h3>
+    </div>
+    <div class="row" id="system-controls3">
+      <button id="dephasing" class="gate-button">Switch to Lab Frame</button>
+      <!-- Slider for Drive Frequency -->
+      <div class="slider-container">
+        <label for="driveFrequency">Drive Frequency:</label>
+        <input type="range" id="driveFrequency" name="driveFrequency" min="1000" max="25000" value="13000" class="slider">
+      </div>
     </div>
 
+    <div class="row-header" id="pauli-gates-56">
+      <h3>Challenges</h3>
+    </div>
     <div class="row" id="system-controls2">
       <button id="challenge1" class="gate-button">Challenge Level 1</button>
       <button id="challenge2" class="gate-button">Challenge Level 2</button>
       <button id="challenge3" class="gate-button">Challenge Level 3</button>
+    </div>
+
+    <div class="row-header" id="pauli-gates-526">
+      <h3>ADVANCED: Quantum Channels</h3>
+    </div>
+    <div class="row" id="system-controls56">
+      <button id="phaseflip" class="gate-button">Dephasing Channel</button>
+      <button id="bitflip" class="gate-button">Bit Flip Channel</button>
+      <button id="bitphaseflip" class="gate-button">Bit-Phase Flip Channel</button>
+      <button id="deplorarize" class="gate-button">Depolarizing Channel</button>
+      <button id="ampdamp" class="gate-button">Amplitude Damping Channel</button>
+    </div>
+    <div class="row" id="system-controls256">
+      <div class="slider-container">
+        <label for="pvalue">Channel Probability p = .5 to p = 1</label>
+        <input type="range" id="pvalue" name="pvalue" min="50" max="100" value="80" class="slider">
+      </div>
+    </div>
+
+    <div class="row-header" id="pauli-gates-23">
+      <h3>Reset (Or Refresh)</h3>
+    </div>
+    <div class="row" id="system-controls">
+      <button id="reset" class="gate-button">Reset</button>
     </div>
 
   </div>

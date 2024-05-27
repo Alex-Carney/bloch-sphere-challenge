@@ -9,6 +9,8 @@ const renderer = new Renderer(window);
 // Initialize the Bloch Sphere within the provided scene from Renderer
 const blochSphere = new BlochSphere(renderer.scene);
 
+let pValue = 0.3; // Default value for p in the channel functions
+
 // main.js (example usage)
 document.getElementById('xGate').addEventListener('click', () => blochSphere.applyXGate());
 document.getElementById('yGate').addEventListener('click', () => blochSphere.applyYGate());
@@ -23,8 +25,23 @@ document.getElementById('tDaggerGate').addEventListener('click', () => blochSphe
 document.getElementById('challenge1').addEventListener('click', () => blochSphere.startChallengeMode(CHALLENGE_MODE_LEVELS.EASY));
 document.getElementById('challenge2').addEventListener('click', () => blochSphere.startChallengeMode(CHALLENGE_MODE_LEVELS.MEDIUM));
 document.getElementById('challenge3').addEventListener('click', () => blochSphere.startChallengeMode(CHALLENGE_MODE_LEVELS.HARD));
+// channels
+document.getElementById('phaseflip').addEventListener('click', () => blochSphere.applyPhaseFlipChannel(pValue));
+document.getElementById('bitflip').addEventListener('click', () => blochSphere.applyBitFlipChannel(pValue));
+document.getElementById('bitphaseflip').addEventListener('click', () => blochSphere.applyBitPhaseFlipChannel(pValue));
+document.getElementById('deplorarize').addEventListener('click', () => blochSphere.applyDepolarizingChannel(pValue));
+document.getElementById('ampdamp').addEventListener('click', () => blochSphere.applyGeneralizedAmplitudeDamping(renderer, pValue));
+// event listener for slider
+document.getElementById('pvalue').addEventListener('input', (event) => {
+    pValue = parseFloat(event.target.value) / 100; // Convert range from 0-100 to 0-1
+    document.getElementById('pvalueDisplay').textContent = pValue.toFixed(2); // Display the value
+});
+document.getElementById('driveFrequency').addEventListener('input', (event) => blochSphere.setDriveFrequency(event.target.value));
 
-
+document.getElementById('dephasing').addEventListener('click', () => {
+    document.getElementById('dephasing').textContent = document.getElementById('dephasing')
+        .textContent === 'Switch to Lab Frame' ? 'Switch to Rotating Frame' : 'Switch to Lab Frame';
+})
 
 renderer.onWindowResize(); // Ensure the renderer size is set correctly
 

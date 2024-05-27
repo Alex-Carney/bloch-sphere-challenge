@@ -8,8 +8,9 @@ import {CHALLENGE_MODE_LEVELS} from "../challenge_mode/challenge_mode.js";
 export class BlochSphere {
     constructor(scene) {
         this.scene = scene;
-        this.arrow = createArrow();
-        this.scene.add(this.arrow);
+        this.arrow = null;
+        this.blochSphereGroup = new THREE.Group();
+
         this.initializeComponents();
         this.initializeTraceLine();
         this.dephasingActive = false;
@@ -19,12 +20,14 @@ export class BlochSphere {
         this.challengeModeActivated = false;
         this.coins = [];
         this.hardMode = false;
+
+        this.driveDuration = 5000;
     }
 
     startDephasing() {
         const axis = new THREE.Vector3(0, 1, 0); // Z-axis for dephasing
         const halfCircle = Math.PI; // 360 degrees
-        const duration = 20000; // Duration for a full 360 rotation, can adjust for slower/faster dephasing
+        const duration = this.driveDuration; // Duration for a full 360 rotation, can adjust for slower/faster dephasing
 
         const quaternionInitial = this.arrow.quaternion.clone();
         const quaternionChange = new THREE.Quaternion().setFromAxisAngle(axis, halfCircle);
@@ -65,12 +68,104 @@ export class BlochSphere {
         }
     }
 
-    initializeComponents() {
-        this.scene.add(createSphere());
-        this.scene.add(createAxes());
-        this.scene.add(createEquator(0.5));
-        addTextLabels(this.scene);
+    setDriveFrequency(frequency) {
+        if(this.dephasingActive) {
+            this.stopDephasing();
+            this.driveDuration = 26000 - frequency;
+            this.startDephasing();
+        }
     }
+
+    initializeComponents() {
+        const sphere = createSphere();
+        const equator = createEquator(.5);
+        const axes = createAxes();
+        const labels = addTextLabels();
+        this.arrow = createArrow();
+
+        this.blochSphereGroup.add(sphere);
+        this.blochSphereGroup.add(equator);
+        this.blochSphereGroup.add(axes);
+        this.blochSphereGroup.add(this.arrow);
+        this.blochSphereGroup.add(...labels);
+
+        this.scene.add(this.blochSphereGroup);
+        // this.scene.add(this.arrow);
+        // this.scene.add(createSphere());
+        // this.scene.add(createAxes());
+        // this.scene.add(createEquator(0.5));
+        // addTextLabels(this.scene);
+    }
+
+    applyPhaseFlipChannel(p) {
+        const scaleXY = 1 - 2 * p;
+        this.blochSphereGroup.scale.set(scaleXY, 1, scaleXY);
+    }
+
+    applyBitFlipChannel(p) {
+        const scaleYZ = 1 - 2 * p;
+        this.blochSphereGroup.scale.set(1, scaleYZ, scaleYZ);
+    }
+
+    applyBitPhaseFlipChannel(p) {
+        const scaleXZ = 1 - 2 * p;
+        this.blochSphereGroup.scale.set(scaleXZ, scaleXZ, 1);
+    }
+
+    applyDepolarizingChannel(p) {
+        const scale = 1 -  p;
+        this.blochSphereGroup.scale.set(scale, scale, scale);
+    }
+
+    // applyGeneralizedAmplitudeDamping(p) {
+    //     const gamma = .3
+    //     this.blochSphereGroup.children.forEach(mesh => {
+    //         let oldPosition = mesh.position.clone();
+    //
+    //         // Calculate new x, y using simple scaling
+    //         let newX = oldPosition.x * Math.sqrt(1 - gamma);
+    //         let newY = oldPosition.y * Math.sqrt(1 - gamma);
+    //
+    //         // Calculate new z more complex formula
+    //         let newZ = gamma * (2 * p - 1) + oldPosition.z * (1 - gamma);
+    //
+    //         // Set the new position of the vector
+    //         mesh.position.set(newX, newY, newZ);
+    //     });
+    // }
+    applyGeneralizedAmplitudeDamping(renderer, p) {
+        const geometry = new THREE.SphereGeometry(1, 16, 16);
+        const positionAttribute = geometry.getAttribute('position').array;
+
+        const gamma = .95
+        for (let i = 0; i < positionAttribute.length; i += 3) {
+            positionAttribute[i] = positionAttribute[i] * Math.sqrt(1 - gamma);
+            positionAttribute[i + 2] = positionAttribute[i + 2] * Math.sqrt(1 - gamma);
+            positionAttribute[i + 1] = positionAttribute[i + 1] * (1 - gamma) + gamma * (2 * p - 1);
+        }
+
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xaaaaaa,
+            transparent: true,
+            opacity: 0,
+            depthWrite: false
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.name = 'blochSphere';
+
+        const edgesGeometry = new THREE.EdgesGeometry(geometry);
+        const wireframeMaterial = new THREE.LineBasicMaterial({
+            color: 0xbbbbbb,  // Lighter grey to make less prominent
+            transparent: true,
+            opacity: 0.66  // Reduce opacity for less prominence
+        });
+        const wireframe = new THREE.LineSegments(edgesGeometry, wireframeMaterial);
+        mesh.add(wireframe);
+
+        this.scene.add(mesh);
+    }
+
+
 
     animateRotation(axis, angle, onComplete) {
         const wasDephasing = this.dephasingActive;
@@ -121,7 +216,7 @@ export class BlochSphere {
         this.traceGeometry.setAttribute('position', new THREE.Float32BufferAttribute(this.positions, 3));
         const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
         this.traceLine = new THREE.Line(this.traceGeometry, material);
-        this.scene.add(this.traceLine);
+        this.blochSphereGroup.add(this.traceLine);
     }
 
     updateTraceLine() {
@@ -138,6 +233,7 @@ export class BlochSphere {
         this.stopDephasing();
         this.dephasingActive = false;
         this.arrow.rotation.set(0, 0, 0);
+        this.blochSphereGroup.scale.set(1, 1, 1);
 
         // Clear the positions and reset the trace line geometry
         this.positions = [0, 1, 0];  // Assuming the arrow starts pointing up
@@ -256,9 +352,9 @@ export class BlochSphere {
                 if(this.coins.length === 0) {
                     this.challengeModeActivated = false;
                     if(this.hardMode) {
-                        alert("YOU WON ON HARD MODE! YOU ARE A GENIUS! WOOOO!!! SHOW ALEX HOW LFG YOU ARE!");
+                        alert("Congratulations! You have completed the challenge ON THE HARDEST MODE! Nice job.");
                     } else {
-                        alert("Congratulations! You have completed the challenge. LETS FREAKING GOOOO LFG LFG LFG")
+                        alert("Congratulations! You have completed the challenge.")
                     }
 
                 }

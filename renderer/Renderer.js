@@ -26,6 +26,11 @@ export class Renderer {
         this.renderer.render(this.scene, this.camera);
     }
 
+    render() {
+        console.log('RERENDERING')
+        this.renderer.render(this.scene, this.camera);
+    }
+
     onWindowResize() {
         // Get the container element from the DOM
         const container = document.getElementById('visualization-container');
