@@ -49,7 +49,7 @@ export function createArrow(sphereGeometry, z_origin = 0) {
     const sphereRadius = sphereGeometry.parameters.radius;
     const direction = new THREE.Vector3(0, 1, 0);
     const origin = new THREE.Vector3(0, z_origin, 0);
-    const length = sphereRadius * 1.2;  // Adjust length based on sphere radius
+    const length = sphereRadius * 1;  // Adjust length based on sphere radius
     const color = 0xff0000;
 
     return new THREE.ArrowHelper(direction.normalize(), origin, length, color);
