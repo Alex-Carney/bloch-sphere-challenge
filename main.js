@@ -7,7 +7,7 @@ import {CHALLENGE_MODE_LEVELS} from "./challenge_mode/challenge_mode.js";
 const renderer = new Renderer(window);
 
 // Initialize the Bloch Sphere within the provided scene from Renderer
-const blochSphere = new BlochSphere(renderer.scene);
+const blochSphere = new BlochSphere(renderer);
 
 let pValue = 0.3; // Default value for p in the channel functions
 
@@ -30,7 +30,12 @@ document.getElementById('phaseflip').addEventListener('click', () => blochSphere
 document.getElementById('bitflip').addEventListener('click', () => blochSphere.applyBitFlipChannel(pValue));
 document.getElementById('bitphaseflip').addEventListener('click', () => blochSphere.applyBitPhaseFlipChannel(pValue));
 document.getElementById('deplorarize').addEventListener('click', () => blochSphere.applyDepolarizingChannel(pValue));
-document.getElementById('ampdamp').addEventListener('click', () => blochSphere.applyGeneralizedAmplitudeDamping(renderer, pValue));
+document.getElementById('ampdamp').addEventListener('click', () => blochSphere.applyGeneralizedAmplitudeDamping(pValue));
+
+document.getElementById('t1').addEventListener('click', () => blochSphere.animateT1Process(5));
+document.getElementById('t2').addEventListener('click', () => blochSphere.animateT2Process(5));
+document.getElementById('t1t2').addEventListener('click', () => blochSphere.animateT1T2Process(5,1));
+
 // event listener for slider
 document.getElementById('pvalue').addEventListener('input', (event) => {
     pValue = parseFloat(event.target.value) / 100; // Convert range from 0-100 to 0-1

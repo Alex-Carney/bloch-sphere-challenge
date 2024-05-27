@@ -1,15 +1,23 @@
 // BlochSphere.js
 import * as THREE from 'three';
-import { createArrow, createSphere, createAxes, createEquator, addTextLabels } from './objects';
+import {
+    addTextLabels,
+    createArrow,
+    createAxes,
+    createBasicSphereGeometry,
+    createEquator,
+    createSphere
+} from './objects';
 import * as TWEEN from '@tweenjs/tween.js'
 import {addCoinToState} from "../challenge_mode/coins.js";
 import {CHALLENGE_MODE_LEVELS} from "../challenge_mode/challenge_mode.js";
 
 export class BlochSphere {
-    constructor(scene) {
-        this.scene = scene;
+    constructor(renderer) {
+        this.renderer = renderer;
+        this.scene = renderer.scene;
         this.arrow = null;
-        this.blochSphereGroup = new THREE.Group();
+        this.blochSphereGroup = null;
 
         this.initializeComponents();
         this.initializeTraceLine();
@@ -76,12 +84,19 @@ export class BlochSphere {
         }
     }
 
-    initializeComponents() {
-        const sphere = createSphere();
-        const equator = createEquator(.5);
-        const axes = createAxes();
-        const labels = addTextLabels();
-        this.arrow = createArrow();
+    initializeComponents(customGeometry = null, z_origin=0) {
+        this.blochSphereGroup = new THREE.Group();
+        let initialSphereGeometry;
+        if(customGeometry) {
+            initialSphereGeometry = customGeometry;
+        } else {
+            initialSphereGeometry = createBasicSphereGeometry();
+        }
+        const sphere = createSphere(initialSphereGeometry);
+        const equator = createEquator(initialSphereGeometry, z_origin, .5);
+        const axes = createAxes(initialSphereGeometry, z_origin);
+        const labels = addTextLabels(initialSphereGeometry, z_origin);
+        this.arrow = createArrow(initialSphereGeometry, z_origin);
 
         this.blochSphereGroup.add(sphere);
         this.blochSphereGroup.add(equator);
@@ -90,11 +105,6 @@ export class BlochSphere {
         this.blochSphereGroup.add(...labels);
 
         this.scene.add(this.blochSphereGroup);
-        // this.scene.add(this.arrow);
-        // this.scene.add(createSphere());
-        // this.scene.add(createAxes());
-        // this.scene.add(createEquator(0.5));
-        // addTextLabels(this.scene);
     }
 
     applyPhaseFlipChannel(p) {
@@ -117,52 +127,115 @@ export class BlochSphere {
         this.blochSphereGroup.scale.set(scale, scale, scale);
     }
 
-    // applyGeneralizedAmplitudeDamping(p) {
-    //     const gamma = .3
-    //     this.blochSphereGroup.children.forEach(mesh => {
-    //         let oldPosition = mesh.position.clone();
+    // applyGeneralizedAmplitudeDamping2(renderer, p) {
+    //     const geometry = new THREE.SphereGeometry(1, 16, 16);
+    //     const positionAttribute = geometry.getAttribute('position').array;
     //
-    //         // Calculate new x, y using simple scaling
-    //         let newX = oldPosition.x * Math.sqrt(1 - gamma);
-    //         let newY = oldPosition.y * Math.sqrt(1 - gamma);
+    //     let maxRadius = 0;
+    //     let xSum = 0, ySum = 0, zSum = 0;
+    //     const gamma = .8
+    //     for (let i = 0; i < positionAttribute.length; i += 3) {
+    //         positionAttribute[i] = positionAttribute[i] * Math.sqrt(1 - gamma);
+    //         positionAttribute[i + 2] = positionAttribute[i + 2] * Math.sqrt(1 - gamma);
+    //         positionAttribute[i + 1] = positionAttribute[i + 1] * (1 - gamma) + gamma;
     //
-    //         // Calculate new z more complex formula
-    //         let newZ = gamma * (2 * p - 1) + oldPosition.z * (1 - gamma);
+    //         // calculate radius with respect to 0, 1, 0 as the origin
+    //         const x = positionAttribute[i];
+    //         const y = positionAttribute[i + 2];
+    //         const z = positionAttribute[i + 1];
+    //         zSum += z;
+    //         const radius = Math.sqrt(x * x + y * y + (z-gamma) * (z-gamma));
+    //         if (radius > maxRadius) {
+    //             maxRadius = radius;
+    //         }
+    //     }
+    //     const sphereZCenter = zSum / (positionAttribute.length / 3);
+    //     console.log('new center', sphereZCenter)
+    //     console.log('new radius', maxRadius)
+    //     geometry.parameters.radius = maxRadius;
+    //     positionAttribute.needsUpdate = true;
     //
-    //         // Set the new position of the vector
-    //         mesh.position.set(newX, newY, newZ);
-    //     });
+    //     this.blochSphereGroup.scale.set(0, 0, 0);
+    //     this.initializeComponents(geometry, sphereZCenter);
     // }
-    applyGeneralizedAmplitudeDamping(renderer, p) {
-        const geometry = new THREE.SphereGeometry(1, 16, 16);
-        const positionAttribute = geometry.getAttribute('position').array;
 
-        const gamma = .95
-        for (let i = 0; i < positionAttribute.length; i += 3) {
-            positionAttribute[i] = positionAttribute[i] * Math.sqrt(1 - gamma);
-            positionAttribute[i + 2] = positionAttribute[i + 2] * Math.sqrt(1 - gamma);
-            positionAttribute[i + 1] = positionAttribute[i + 1] * (1 - gamma) + gamma * (2 * p - 1);
-        }
+    applyGeneralizedAmplitudeDamping(gamma) {
+        const scaleXZ = Math.sqrt(1 - gamma);
+        const scaleY = (1 - gamma);
 
-        const material = new THREE.MeshBasicMaterial({
-            color: 0xaaaaaa,
-            transparent: true,
-            opacity: 0,
-            depthWrite: false
-        });
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.name = 'blochSphere';
+        this.blochSphereGroup.scale.set(scaleXZ, scaleY, scaleXZ);
+        this.blochSphereGroup.position.y = gamma;
+    }
 
-        const edgesGeometry = new THREE.EdgesGeometry(geometry);
-        const wireframeMaterial = new THREE.LineBasicMaterial({
-            color: 0xbbbbbb,  // Lighter grey to make less prominent
-            transparent: true,
-            opacity: 0.66  // Reduce opacity for less prominence
-        });
-        const wireframe = new THREE.LineSegments(edgesGeometry, wireframeMaterial);
-        mesh.add(wireframe);
+    animateT1Process(T1) {
+        const startTime = Date.now();
 
-        this.scene.add(mesh);
+        const animateStep = () => {
+            const elapsedTime = (Date.now() - startTime) / 1000; // time in seconds
+            const gamma = 1 - Math.exp(-elapsedTime / T1);
+            this.applyGeneralizedAmplitudeDamping(gamma);
+            // Update transformation based on gamma
+            if (gamma < 0.95) { // Continue animating while gamma is less than 0.99
+                requestAnimationFrame(animateStep);
+            } else {
+                console.log("Animation completed"); // Optional: Signal that the animation is complete
+            }
+            // Render the scene after updates
+            this.renderer.render();
+        };
+        animateStep(); // Start the animation loop
+    }
+
+    animateT2Process(T2) {
+        const startTime = Date.now();
+
+        const animateStep = () => {
+            const elapsedTime = (Date.now() - startTime) / 1000; // time in seconds
+            const sqrt_one_minus_lambda = Math.exp(-elapsedTime / (2*T2));
+            this.blochSphereGroup.scale.set(sqrt_one_minus_lambda, 1, sqrt_one_minus_lambda);
+            // Update transformation based on gamma
+            if (sqrt_one_minus_lambda > 0.05) { // Continue animating while gamma is less than 0.99
+                requestAnimationFrame(animateStep);
+            } else {
+                console.log("Animation completed"); // Optional: Signal that the animation is complete
+            }
+            // Render the scene after updates
+            this.renderer.render();
+        };
+        animateStep(); // Start the animation loop
+    }
+
+    animateT1T2Process(T1, T2) {
+        const startTime = Date.now();
+
+        const animateStep = () => {
+            const elapsedTime = (Date.now() - startTime) / 1000; // time in seconds
+
+            // Calculate gamma for T1 process (Amplitude Damping)
+            const gamma = 1 - Math.exp(-elapsedTime / T1);
+            const scaleXZ_T1 = Math.sqrt(1 - gamma);  // T1 affects X and Z axes
+            const scaleY_T1 = 1 - gamma;  // T1 also affects Y axis
+
+            // Calculate lambda for T2 process (Phase Damping)
+            const sqrt_one_minus_lambda = Math.exp(-elapsedTime / (2 * T2));
+            // T2 affects X and Z axes, no vertical (Y) scale change directly from T2
+
+            // Combine the scale factors
+            const combinedScaleXZ = scaleXZ_T1 * sqrt_one_minus_lambda; // Combine X and Z scales
+             // Y scale only affected by T1
+            // Apply combined scaling and position adjustment
+            this.blochSphereGroup.scale.set(combinedScaleXZ, scaleY_T1, combinedScaleXZ);
+            this.blochSphereGroup.position.y = gamma; // Position adjustment for T1
+            // Update transformation based on gamma
+            if (sqrt_one_minus_lambda > 0.05 || gamma < .95) { // Continue animating while gamma is less than 0.99
+                requestAnimationFrame(animateStep);
+            } else {
+                console.log("Animation completed"); // Optional: Signal that the animation is complete
+            }
+            // Render the scene after updates
+            this.renderer.render();
+        };
+        animateStep(); // Start the animation loop
     }
 
 

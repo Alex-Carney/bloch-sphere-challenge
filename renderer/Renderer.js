@@ -27,7 +27,6 @@ export class Renderer {
     }
 
     render() {
-        console.log('RERENDERING')
         this.renderer.render(this.scene, this.camera);
     }
 
