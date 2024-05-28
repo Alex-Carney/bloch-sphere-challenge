@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloch Sphere Simulator</title>
+  <script type="module" crossorigin src="/bloch-sphere-challenge/assets/index-CV6ptdiq.js"></script>
+  <link rel="stylesheet" crossorigin href="/bloch-sphere-challenge/assets/index-DZtxPLr3.css">
+</head>
+<body>
+<div id="main-container">
+  <div id="controls-container">
+    <!-- Pauli Gates -->
+    <div class="row-header" id="pauli-gates-2">
+      <h3>Simple Gates</h3>
+    </div>
+    <div class="row" id="pauli-gates">
+      <button id="xGate" class="gate-button">Apply X Gate</button>
+      <button id="yGate" class="gate-button">Apply Y Gate</button>
+      <button id="zGate" class="gate-button">Apply Z Gate</button>
+      <button id="hGate" class="gate-button">Apply Hadamard Gate</button>
+    </div>
+
+    <!-- Phase Gates -->
+    <div class="row-header" id="pauli-gates-3">
+      <h3>Phase Gates</h3>
+    </div>
+    <div class="row" id="phase-gates">
+      <button id="sGate" class="gate-button">Apply S Gate</button>
+      <button id="sDaggerGate" class="gate-button">Apply S† Gate</button>
+      <button id="tGate" class="gate-button">Apply T Gate</button>
+      <button id="tDaggerGate" class="gate-button">Apply T† Gate</button>
+    </div>
+
+
+
+    <div class="row-header" id="pauli-gates-52">
+      <h3>Frame Change</h3>
+    </div>
+    <div class="row" id="system-controls3">
+      <button id="dephasing" class="gate-button">Switch to Lab Frame</button>
+      <!-- Slider for Drive Frequency -->
+      <div class="slider-container">
+        <label for="driveFrequency">Drive Frequency:</label>
+        <input type="range" id="driveFrequency" name="driveFrequency" min="1000" max="25000" value="13000" class="slider">
+      </div>
+    </div>
+
+    <div class="row-header" id="pauli-gates-56">
+      <h3>Challenges</h3>
+    </div>
+    <div class="row" id="system-controls2">
+      <button id="challenge1" class="gate-button">Challenge Level 1</button>
+      <button id="challenge2" class="gate-button">Challenge Level 2</button>
+      <button id="challenge3" class="gate-button">Challenge Level 3</button>
+    </div>
+
+    <div class="row-header" id="pauli-gates-526">
+      <h3>ADVANCED: Quantum Channels</h3>
+    </div>
+    <div class="row" id="system-controls56">
+      <button id="phaseflip" class="gate-button">Dephasing Channel</button>
+      <button id="bitflip" class="gate-button">Bit Flip Channel</button>
+      <button id="bitphaseflip" class="gate-button">Bit-Phase Flip Channel</button>
+      <button id="deplorarize" class="gate-button">Depolarizing Channel</button>
+      <button id="ampdamp" class="gate-button">Amplitude Damping Channel</button>
+    </div>
+    <div class="row" id="system-controls256">
+      <div class="slider-container">
+        <label for="pvalue">Channel Probability p = .5 to p = 1</label>
+        <input type="range" id="pvalue" name="pvalue" min="50" max="100" value="80" class="slider">
+      </div>
+    </div>
+
+    <div class="row-header" id="pauli-gates-523426">
+      <h3>ADVANCED: Decay Processes</h3>
+    </div>
+    <div class="row-header" id="pauli-gates-52342226">
+      <h5>NOTE: For BOTH processes, only possible if T2 lte T1/2  </h5>
+    </div>
+    <div class="row" id="system-controls56222">
+      <button id="t1" class="gate-button">Simulate T1 Process</button>
+      <button id="t2" class="gate-button">Simulate T2 Process</button>
+      <button id="t1t2" class="gate-button">Simulate BOTH Processes</button>
+      <div class="slider-container">
+        <label for="t1val">T1 Time 1 to 8s</label>
+        <input type="range" id="t1val" name="t1val" min="1" max="8" value="4" class="slider">
+        <label for="t2val">T2 Time 1 to 8s</label>
+        <input type="range" id="t2val" name="t2val" min="1" max="8" value="4" class="slider">
+      </div>
+    </div>
+
+    <div class="row-header" id="pauli-gates-23">
+      <h3>Reset (Or Refresh)</h3>
+    </div>
+    <div class="row" id="system-controls">
+      <button id="reset" class="gate-button">Hard Reset</button>
+      <button id="duplicate" class="gate-button">Duplicate Sphere</button>
+    </div>
+
+  </div>
+
+  <div id="visualization-container">
+    <!-- Three.js visualization will be appended here -->
+  </div>
+</div>
+</body>
+</html>
